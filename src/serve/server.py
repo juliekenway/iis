@@ -11,18 +11,18 @@ import os
 app = Flask(__name__)
 
 
-def reorder(df):
-    df = df.sort_index(axis=1)
-    new_data = pd.DataFrame()
-    new_data.sort_index(axis=1)
-    return new_data
+# def reorder(df):
+#    df = df.sort_index(axis=1)
+#    new_data = pd.DataFrame()
+#    new_data.sort_index(axis=1)
+#    return new_data
 
 
 @app.route('/air/predict/', methods=['POST'])
 def predict():
     object_json = request.json
     df = pd.json_normalize(object_json)
-    df = reorder(df)
+    #df = reorder(df)
     print(object_json)
 
     root_dir = os.path.abspath(os.path.join(

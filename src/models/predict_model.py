@@ -13,12 +13,9 @@ def predict_model(data_path, model_path, train_metrics_path, metrics_path):
     print('Data read')
 
     columns = np.array(df.columns)
-    mask = df.columns != 'pm10'
+    mask = columns != 'pm10'
 
-    x = df.loc[:, mask]
-    y = df['pm10']
-
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=1234, shuffle=True)
+    x_train, x_test, y_train, y_test = train_test_split(df[columns[mask]], df['pm10'], test_size=0.3, random_state=1234, shuffle=True)
     model = LinearRegression().fit(x_train, y_train)
     print('Model trained')
 
@@ -48,7 +45,7 @@ if __name__ == '__main__':
     root_dir = os.path.abspath(os.path.join(
         os.path.dirname(__file__), '../..'))
 
-    data_path = os.path.join(root_dir, 'data', 'processed', 'data.csv')
+    data_path = os.path.join(root_dir, 'data', 'processed.csv')
     model_path = os.path.join(root_dir, 'models', 'linear')
     train_metrics_path = os.path.join(root_dir, 'reports', 'train_metrics.txt')
     metrics_path = os.path.join(root_dir, 'reports', 'metrics.txt')

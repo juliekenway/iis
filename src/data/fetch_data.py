@@ -19,8 +19,7 @@ def process_data(src, dist):
 
     df = pd.DataFrame()
 
-    print('Transforming json to pandas dataframe...')
-    # prilagodimo json dataframe-u
+    print('Transforming dataframe...')
     for i in range(len(raw)):
         jdata = json.loads(raw[i]['json'])
         station = jdata['arsopodatki']['postaja']
@@ -29,24 +28,21 @@ def process_data(src, dist):
             data = refactor_values(data)
             df = pd.concat([df, pd.json_normalize(data)])
 
-    print('Filling missing numerical data...')
-    # nadomestimo numericne podatke
+    print('Filling, transorming and dropping data...')
     num_cols = df.select_dtypes(exclude=['object']).columns
     df = df.assign(**{col: df[col].fillna(df[col].mean()) for col in num_cols})
 
-    print('Transforming categorical data...')
-    # kategoricni podatki
     df_location = pd.get_dummies(df['merilno_mesto'])
     df = pd.concat([df, df_location], axis=1).reindex(df.index)
 
-    print('Dropping unuseful columns...')
-    # neuporabni podatki
     df.drop(columns=['merilno_mesto', 'sifra', 'datum_od', 'datum_do'], inplace=True)
 
-    print('Saving processed data...')
+    print('Saving new data...')
+    df_sorted = df.sort_index(axis=1)
+    df = df_sorted
     df.to_csv(dist, index=False)
 
-    print('Finished!')
+    print('OK!')
 
 
 if __name__ == '__main__':
